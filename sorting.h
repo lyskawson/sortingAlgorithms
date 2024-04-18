@@ -6,16 +6,20 @@
 
 
 struct Movie {
+    int number;
     std::string name;
     double rating;
-    bool operator<(Movie compared) { return (rating < compared.rating); }
-    bool operator>(Movie compared) { return (rating > compared.rating); }
+
+    //bool operator<(Movie compared) { return (rating < compared.rating); }
+    //bool operator>(Movie compared) { return (rating > compared.rating); }
 };
 //quickSort
 
-void mergeSort(std::vector<Movie>& arr, int l, int r);
-void quickSort(std::vector<Movie>& arr, int l, int r);
-void hybridIntroSort(std::vector<Movie>& arr, int l, int r);
+void merge(std::vector<Movie>& vec, int begin, int mid, int end);
+void quickSort(std::vector<Movie>& vec, int begin, int end);
+void mergeSort(std::vector<Movie>& vec, int begin, int end);
+void insertionSort(std::vector<Movie>& vec);
+void bucketSort(std::vector<Movie>& vec, int n);
 
 
 #endif //PROJECT2_SORTING_H
