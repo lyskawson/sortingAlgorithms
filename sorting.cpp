@@ -1,32 +1,31 @@
 #include "sorting.h"
 
-
-void merge(std::vector<Movie>& vec, int left, int mid, int right)
+void merge(std::vector<Movie>& vec, int begin, int mid, int end)
 {
-    int sub1 = mid - left + 1;
-    int sub2 = right - mid;
+    int sub1 = mid - begin + 1;
+    int sub2 = end - mid;
 
 
-    std::vector<Movie> L(sub1);
-    std::vector<Movie> R(sub2);
+    std::vector<Movie> left(sub1);
+    std::vector<Movie> right(sub2);
 
     for (int i = 0; i < sub1; i++)
-        L[i] = vec[left + i];
+        left[i] = vec[begin + i];
     for (int j = 0; j < sub2; j++)
-        R[j] = vec[mid + 1 + j];
+        right[j] = vec[mid + 1 + j];
 
     int i = 0; //index of sub1
     int j = 0; //index of sub2
-    int k = left; //index of merged vector
+    int k = begin; //index of merged vector
     while (i < sub1 && j < sub2)
     {
-        if (L[i].rating <= R[j].rating)
+        if (left[i].key <= right[j].key)
         {
-            vec[k] = L[i];
+            vec[k] = left[i];
             i++;
         }
         else {
-            vec[k] = R[j];
+            vec[k] = right[j];
             j++;
         }
         k++;
@@ -34,14 +33,14 @@ void merge(std::vector<Movie>& vec, int left, int mid, int right)
 
     while (i < sub1)
     {
-        vec[k] = L[i];
+        vec[k] = left[i];
         i++;
         k++;
     }
 
     while (j < sub2)
     {
-        vec[k] = R[j];
+        vec[k] = right[j];
         j++;
         k++;
     }
@@ -59,76 +58,140 @@ void mergeSort(std::vector<Movie>& vec, int begin, int end)
     }
 }
 
-int partition(std::vector<Movie> &vec, int begin, int end)
+void bucketSort(std::vector<Movie> &vec, int numBuckets)
 {
-    Movie pivot = vec[end];
-    int i = (begin - 1);
+    if (vec.empty())
+        return;
 
-    for(int j = begin; j <= end; j++)
+
+    double minKey = vec[0].key;
+    double maxKey = vec[0].key;
+    for (const Movie& movie : vec)
     {
-        if(vec[j].rating < pivot.rating)
+        if (movie.key < minKey)
         {
-            i++;
-            Movie temp = vec[i];
-            vec[i] = vec[j];
-            vec[j] = temp;
+            minKey = movie.key;
+        }
+        if (movie.key > maxKey)
+        {
+            maxKey = movie.key;
         }
     }
-    Movie temp = vec[i+1];
-    vec[i+1] = vec[end];
-    vec[end] = temp;
-    return (i + 1);
+
+
+    std::vector<std::vector<Movie>> buckets(numBuckets);
+    double range = (maxKey - minKey) / numBuckets;
+
+
+    for (const Movie &movie : vec)
+    {
+        int bucketIndex = int((movie.key - minKey) / range);
+        if (bucketIndex == numBuckets)
+        {
+            bucketIndex--;
+        }
+        buckets[bucketIndex].push_back(movie);
+    }
+
+
+    int idx = 0;
+    for (std::vector<Movie>& bucket : buckets)
+    {
+        std::sort(bucket.begin(), bucket.end(), [](const Movie& a, const Movie& b){return a.key < b.key;});
+
+        for (const Movie& movie : bucket)
+        {
+            vec[idx++] = movie;
+        }
+    }
 }
 
+int partition(std::vector<Movie>& vec, int start, int end)
+{
+    double pivot = vec[start + (end - start) / 2].key;
+    int left = start, right = end;
+
+    while (left <= right)
+    {
+
+        while (vec[left].key < pivot)
+            left++;
+
+
+        while (vec[right].key > pivot)
+            right--;
+
+
+        if (left <= right)
+        {
+            swap(vec[left], vec[right]);
+            left++;
+            right--;
+        }
+    }
+
+    return left;
+}
+
+
+
+void quickSortStandard(std::vector<Movie>& vec, int begin, int end) 
+{
+    if (begin < end)
+    {
+        int pivot = partition(vec, begin, end);
+        quickSortStandard(vec, begin, pivot - 1 );
+        quickSortStandard(vec, pivot + 1, end);
+    }
+}
+
+
+
+void swap(Movie& movie1, Movie& movie2)
+{
+    Movie temp = movie1;
+    movie1 = movie2;
+    movie2 = temp;
+}
+
+
+void threeWayPartition(std::vector<Movie> &vec, int begin, int end, int& i, int& j)
+{
+    if (end - begin <= 1)
+    {
+        if (vec[end].key < vec[begin].key)
+            swap(vec[end], vec[begin]);
+        i = begin;
+        j = end;
+        return;
+    }
+
+    int mid = begin;
+    double pivot = vec[end].key;
+    while (mid <= end)
+    {
+        if (vec[mid].key < pivot)
+            swap(vec[begin++], vec[mid++]);
+        else if (vec[mid].key == pivot)
+            mid++;
+        else if (vec[mid].key > pivot)
+            swap(vec[mid], vec[end--]);
+    }
+
+    i = begin - 1;
+    j = mid;
+}
 
 void quickSort(std::vector<Movie> &vec, int begin, int end)
 {
-    if (end > begin )
+    if (begin < end)
     {
-        int pivot = partition(vec, begin, end);
-        quickSort(vec, begin, pivot-1);
-        quickSort(vec, pivot + 1, end);
+        int i, j;
+        threeWayPartition(vec, begin, end, i, j);
+        quickSort(vec, begin, i);
+        quickSort(vec, j, end);
     }
 }
 
-void insertionSort(std::vector<Movie> &bucket)
-{
-    for (int i = 1; i < bucket.size(); i++)
-    {
-        Movie key = bucket[i];
-        int j = i - 1;
-
-        while (j >= 0 && bucket[j].rating > key.rating)
-        {
-            bucket[j + 1] = bucket[j];
-            j--;
-        }
-        bucket[j + 1] = key;
-    }
-}
-
-void bucketSort(std::vector<Movie>& vec, int n)
-{
-    std::vector<std::vector<Movie>> buckets(10);
-    for (int i = 0; i < n; i++)
-    {
-        int index = static_cast<int>((vec[i].rating - 1) * n / 10);
-        buckets[index].push_back(vec[i]);
-    }
 
 
-    for (int i = 0; i < buckets.size(); i++)
-    {
-        insertionSort(buckets[i]);
-    }
-
-
-    int k = 0;
-    for (int i = 0; i < buckets.size(); ++i)
-    {
-        for (int j = 0; j < buckets[i].size(); ++j)
-        {
-            vec[k++] = buckets[i][j];
-        }
-    }
-}

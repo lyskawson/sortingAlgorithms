@@ -3,23 +3,35 @@
 #include <iostream>
 #include <vector>
 
-
-
 struct Movie {
-    int number;
-    std::string name;
-    double rating;
+    std::string text;
+    double key;
 
-    //bool operator<(Movie compared) { return (rating < compared.rating); }
-    //bool operator>(Movie compared) { return (rating > compared.rating); }
+    bool operator<(const Movie& compared) const
+    {
+        return key < compared.key;
+    }
+    bool operator>(const Movie& compared) const
+    {
+        return key > compared.key;
+    }
+
 };
-//quickSort
 
-void merge(std::vector<Movie>& vec, int begin, int mid, int end);
-void quickSort(std::vector<Movie>& vec, int begin, int end);
-void mergeSort(std::vector<Movie>& vec, int begin, int end);
-void insertionSort(std::vector<Movie>& vec);
-void bucketSort(std::vector<Movie>& vec, int n);
+void merge(std::vector<Movie> &vec, int begin, int mid, int end);
+void mergeSort(std::vector<Movie> &vec, int begin, int end);
+void bucketSort(std::vector<Movie> &vec, int bucketSize);
+void threeWayPartition(std::vector<Movie> &vec, int begin, int end, int& i, int& j);
+void quickSort(std::vector<Movie> &vec, int begin, int end);
+void swap(Movie& movie1, Movie& movie2);
+int partition(std::vector<Movie> &vec, int begin, int end);
+void quickSortStandard(std::vector<Movie> &vec, int begin, int end);
+
+
+
+
+
+void swap(Movie& movie1, Movie& movie2);
 
 
 #endif //PROJECT2_SORTING_H
