@@ -31,7 +31,7 @@ void quickSortStandard(std::vector<Movie> &vec, int begin, int end);
 
 
 
-void swap(Movie& movie1, Movie& movie2);
+
 
 
 #endif //PROJECT2_SORTING_H

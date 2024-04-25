@@ -140,7 +140,7 @@ double average(const std::vector<Movie> &vec) {
 
 void sortMovies(std::vector<Movie> &movies, const std::string &sortType)
 {
-    if (sortType == "QUICK")
+    if (sortType == "MODIFIEDQUICK")
     {
         auto start = std::chrono::high_resolution_clock::now();
         quickSort(movies, 0, movies.size() - 1);
@@ -164,7 +164,7 @@ void sortMovies(std::vector<Movie> &movies, const std::string &sortType)
 
         std::cerr << "Time: " << std::fixed << std::setprecision(3) << time << " " << unit << std::endl;
     }
-    else if (sortType == "STANDARDQUICK")
+    else if (sortType == "QUICK")
     {
         auto start = std::chrono::high_resolution_clock::now();
         quickSortStandard(movies, 0, movies.size() - 1);

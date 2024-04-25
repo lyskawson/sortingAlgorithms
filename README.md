@@ -14,8 +14,8 @@ This program is designed to efficiently sort various  CSV data files based on th
 ## Compiling Project
 
 To compile the project, navigate to the project directory and use the following command:
-* **g++ sorting.cpp -c**
-* **g++ main.cpp sorting.o -o prog**
+* **g++ -std=c++11 sorting.cpp -c**
+* **g++ -std=c++11 main.cpp sorting.o -o prog**
 
 ## Usage
 
@@ -23,7 +23,7 @@ To execute the driver program:
 **./prog input_file_name sort_key_pos n_items algo_name shuffle_passes shuffle_seed**
 - **sort_key_pos**: specifies the field number in the input file that serves as the sorting key
 - **n_items**: specifies the number of elements to load into memory and sort
-- **algo_name**: specifies the sorting algorithm to use from the following list: MERGE, QUICK, STANDARDQUICK, BUCKET
+- **algo_name**: specifies the sorting algorithm to use from the following list: MERGE, MODIFIEDQUICK, QUICK, BUCKET
 - **shuffle_passes**:  is an optional parameter, if provided it specifies the number of shuffling passes to perform on the data loaded from the file. If this parameter is not specified, no shuffling is performed.
 - **shuffle_seed**: is an optional parameter, if provided it specifies the seed for the random number generator to be used to initialize the pseudorandom number generator before shuffling the data. If this parameter is not specified, the seed will be generated randomly.
 ## Error Handling
